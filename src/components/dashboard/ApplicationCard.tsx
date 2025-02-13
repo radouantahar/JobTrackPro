@@ -4,18 +4,22 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { CalendarDays, Building2, Briefcase, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 interface ApplicationCardProps {
+  id?: string;
   companyName?: string;
   role?: string;
   applicationDate?: Date;
   nextAction?: string;
-  status?: "applied" | "interview" | "offer" | "rejected";
+  status?: "selected" | "applied" | "interview" | "offer" | "rejected";
   onEdit?: () => void;
 }
 
 const getStatusColor = (status: ApplicationCardProps["status"]) => {
   switch (status) {
+    case "selected":
+      return "bg-purple-100 text-purple-800";
     case "applied":
       return "bg-blue-100 text-blue-800";
     case "interview":
@@ -30,6 +34,7 @@ const getStatusColor = (status: ApplicationCardProps["status"]) => {
 };
 
 const ApplicationCard = ({
+  id = "1",
   companyName = "Example Company",
   role = "Software Engineer",
   applicationDate = new Date(),
@@ -37,6 +42,12 @@ const ApplicationCard = ({
   status = "applied",
   onEdit = () => {},
 }: ApplicationCardProps) => {
+  const navigate = useNavigate();
+
+  const handleProcess = () => {
+    navigate(`/process/${id}`);
+  };
+
   return (
     <Card className="w-[280px] bg-white shadow-md hover:shadow-lg transition-shadow cursor-move">
       <CardHeader className="space-y-1 pb-2">
@@ -62,9 +73,15 @@ const ApplicationCard = ({
       </CardContent>
       <CardFooter className="flex justify-between items-center pt-2 border-t">
         <p className="text-xs text-gray-500 line-clamp-1">{nextAction}</p>
-        <Button variant="ghost" size="icon" onClick={onEdit}>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        {status === "selected" ? (
+          <Button variant="default" size="sm" onClick={handleProcess}>
+            Process
+          </Button>
+        ) : (
+          <Button variant="ghost" size="icon" onClick={onEdit}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

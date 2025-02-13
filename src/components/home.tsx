@@ -9,11 +9,29 @@ import AddApplicationDialog from "./dashboard/AddApplicationDialog";
 interface HomeProps {
   onAddApplication?: (data: any) => void;
   onUpdateStatus?: (result: any) => void;
+  selectedJobs?: Array<{
+    id: string;
+    companyName: string;
+    role: string;
+    applicationDate: Date;
+    nextAction?: string;
+    status: "selected";
+  }>;
 }
 
 const Home = ({
   onAddApplication = () => {},
   onUpdateStatus = () => {},
+  selectedJobs = [
+    {
+      id: "selected-1",
+      companyName: "Tech Corp",
+      role: "Senior Developer",
+      applicationDate: new Date(),
+      nextAction: "Ready to apply",
+      status: "selected" as const,
+    },
+  ],
 }: HomeProps) => {
   const [showAddDialog, setShowAddDialog] = React.useState(false);
 
@@ -39,7 +57,37 @@ const Home = ({
         <div className="flex gap-6">
           {/* Status Board */}
           <div className="flex-1">
-            <StatusBoard onDragEnd={onUpdateStatus} />
+            <StatusBoard
+              onDragEnd={onUpdateStatus}
+              applications={[
+                ...selectedJobs,
+                // Default applications
+                {
+                  id: "1",
+                  companyName: "Tech Corp",
+                  role: "Frontend Developer",
+                  applicationDate: new Date(),
+                  nextAction: "Follow up next week",
+                  status: "applied",
+                },
+                {
+                  id: "2",
+                  companyName: "Startup Inc",
+                  role: "Full Stack Engineer",
+                  applicationDate: new Date(),
+                  nextAction: "Technical interview scheduled",
+                  status: "interview",
+                },
+                {
+                  id: "3",
+                  companyName: "Big Tech Co",
+                  role: "Senior Developer",
+                  applicationDate: new Date(),
+                  nextAction: "Waiting for offer letter",
+                  status: "offer",
+                },
+              ]}
+            />
           </div>
 
           {/* Calendar Sidebar */}

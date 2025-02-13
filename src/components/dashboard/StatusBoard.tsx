@@ -8,11 +8,11 @@ interface Application {
   role: string;
   applicationDate: Date;
   nextAction: string;
-  status: "applied" | "interview" | "offer" | "rejected";
+  status: "selected" | "applied" | "interview" | "offer" | "rejected";
 }
 
 interface StatusBoardProps {
-  applications?: Application[];
+  applications: Application[];
   onDragEnd?: (result: any) => void;
 }
 
@@ -44,10 +44,12 @@ const defaultApplications: Application[] = [
 ];
 
 const StatusBoard = ({
-  applications = defaultApplications,
+  applications,
   onDragEnd = () => {},
 }: StatusBoardProps) => {
+  const items = applications?.length ? applications : defaultApplications;
   const columns = [
+    { id: "selected", title: "Selected", color: "bg-purple-50" },
     { id: "applied", title: "Applied", color: "bg-blue-50" },
     { id: "interview", title: "Interview", color: "bg-yellow-50" },
     { id: "offer", title: "Offer", color: "bg-green-50" },
@@ -73,7 +75,7 @@ const StatusBoard = ({
                     ref={provided.innerRef}
                     className="space-y-4"
                   >
-                    {applications
+                    {items
                       .filter((app) => app.status === column.id)
                       .map((application, index) => (
                         <Draggable
@@ -88,6 +90,7 @@ const StatusBoard = ({
                               {...provided.dragHandleProps}
                             >
                               <ApplicationCard
+                                id={application.id}
                                 companyName={application.companyName}
                                 role={application.role}
                                 applicationDate={application.applicationDate}
